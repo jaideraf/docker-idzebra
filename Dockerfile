@@ -1,14 +1,19 @@
 # This is the Dockerfile for jaideraf/idzebra
 
-FROM ubuntu:focal
+ARG UBUNTU_VERSION=20.04
+
+FROM ubuntu:${UBUNTU_VERSION}
 
 # set timezone
-ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=America/Sao_Paulo
 RUN set -eux; \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # add repository, update packages and install dependencies
+
+# https://serverfault.com/a/797318
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
     gnupg2 \
     wget \
