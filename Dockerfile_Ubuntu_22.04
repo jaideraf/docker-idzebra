@@ -1,6 +1,6 @@
 # This is the Dockerfile for jaideraf/idzebra
 
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=22.04
 
 FROM ubuntu:${UBUNTU_VERSION}
 
@@ -14,18 +14,19 @@ RUN set -eux; \
 # https://serverfault.com/a/797318
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
-    gnupg2 \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "deb [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu focal main" \
+RUN printf "deb [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu jammy main\ndeb-src [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu jammy main" \
     | tee -a /etc/apt/sources.list \
-    && wget -qO - https://ftp.indexdata.com/debian/indexdata.asc \
-    | gpg --dearmor | tee /usr/share/keyrings/indexdata.gpg >/dev/null
+    && wget -O /usr/share/keyrings/indexdata.gpg \
+    https://ftp.indexdata.com/debian/indexdata.gpg
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     idzebra-2.0 \
     yaz \
     yaz-icu \
     && rm -rf /var/lib/apt/lists/*
+
+CMD ["/bin/sh", "-c", "bash"]
