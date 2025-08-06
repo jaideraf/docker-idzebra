@@ -6,6 +6,6 @@ Ubuntu with updated [Zebra](https://www.indexdata.com/resources/software/zebra/)
 
 To see the versions installed, use:
 
-- `docker run --rm jaideraf/idzebra:22.04 idzebra-config-2.0 --version`
+- `docker run --rm jaideraf/idzebra:24.04 zebraidx -V`
 
-- `docker run --rm jaideraf/idzebra:22.04 yaz-config --version`
+- `docker run --rm jaideraf/idzebra:24.04 yaz-client -V`
