@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-RUN printf "deb [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu resolute main\ndeb-src [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu noble main" \
+RUN printf "deb [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu resolute main\ndeb-src [signed-by=/usr/share/keyrings/indexdata.gpg] https://ftp.indexdata.com/ubuntu resolute main" \
     | tee -a /etc/apt/sources.list \
     && wget -O /usr/share/keyrings/indexdata.gpg --no-check-certificate \
     https://ftp.indexdata.com/debian/indexdata.gpg
