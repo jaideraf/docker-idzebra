@@ -1,4 +1,5 @@
 # docker-idzebra
+[![Docker Pulls](https://img.shields.io/docker/pulls/jaideraf/idzebra.svg)](https://hub.docker.com/r/jaideraf/idzebra)
 
 Dockerfile for [jaideraf/idzebra](https://hub.docker.com/r/jaideraf/idzebra)
 
