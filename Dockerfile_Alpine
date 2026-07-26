@@ -1,0 +1,79 @@
+# This is the Dockerfile for jaideraf/idzebra (Alpine based)
+#
+# Index Data only distributes prebuilt "yaz"/"idzebra-2.0" packages for
+# Debian/Ubuntu (apt); there are no Alpine (apk) packages for them. So on
+# Alpine we build YAZ and IDZebra from source in a builder stage and copy
+# only the installed files (via DESTDIR) into a slim runtime image.
+
+ARG ALPINE_VERSION=3.20
+ARG YAZ_VERSION=5.37.3
+ARG IDZEBRA_VERSION=2.2.11
+
+FROM alpine:${ALPINE_VERSION} AS builder
+
+ARG YAZ_VERSION
+ARG IDZEBRA_VERSION
+
+# build dependencies for YAZ and IDZebra
+RUN apk add --no-cache \
+    build-base \
+    autoconf \
+    automake \
+    libtool \
+    pkgconfig \
+    wget \
+    tar \
+    icu-dev \
+    libxml2-dev \
+    libxslt-dev \
+    openssl-dev \
+    bzip2-dev \
+    tcl-dev
+
+WORKDIR /usr/src
+
+# build and install YAZ (Z39.50/SRU/SRW toolkit, required by IDZebra) into
+# both / (so idzebra's build can find it) and /out (for the runtime image)
+RUN wget -q "https://ftp.indexdata.com/pub/yaz/yaz-${YAZ_VERSION}.tar.gz" \
+    && tar xzf "yaz-${YAZ_VERSION}.tar.gz" \
+    && cd "yaz-${YAZ_VERSION}" \
+    && ./configure --prefix=/usr --with-icu --with-xslt --with-libxml2 \
+    && make -j"$(nproc)" \
+    && make install \
+    && make install DESTDIR=/out
+
+# build and install IDZebra
+RUN wget -q "https://ftp.indexdata.com/pub/idzebra/idzebra-${IDZEBRA_VERSION}.tar.gz" \
+    && tar xzf "idzebra-${IDZEBRA_VERSION}.tar.gz" \
+    && cd "idzebra-${IDZEBRA_VERSION}" \
+    && ./configure --prefix=/usr \
+    && make -j"$(nproc)" \
+    && make install \
+    && make install DESTDIR=/out
+
+# drop static libs and libtool archives, they are not needed at runtime
+RUN find /out -name '*.la' -delete && find /out -name '*.a' -delete
+
+FROM alpine:${ALPINE_VERSION}
+
+# set timezone
+ENV TZ=America/Sao_Paulo
+RUN apk add --no-cache tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && apk del tzdata
+
+# runtime dependencies for YAZ / IDZebra
+RUN apk add --no-cache \
+    icu-libs \
+    libxml2 \
+    libxslt \
+    libbz2 \
+    tcl \
+    libgcc \
+    libstdc++
+
+COPY --from=builder /out/ /
+
+RUN ldconfig /usr/lib || true
+
+CMD ["/bin/sh", "-c", "sh"]
