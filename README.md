@@ -8,17 +8,17 @@ Ubuntu with updated [Zebra](https://www.indexdata.com/resources/software/zebra/)
 Build the image with:
 
 ```shell
-docker build -t "jaideraf/idzebra:26.04" -f "Dockerfile_Ubuntu_26.04" .
+docker build -t "jaideraf/idzebra:alpine" -f "Dockerfile_Alpine" .
 ```
 
 Push to Docker Hub with:
 
 ```shell
-docker push "jaideraf/idzebra:26.04"
+docker image push "jaideraf/idzebra:alpine"
 ```
 
 To see the versions installed, use:
 
-- `docker run --rm jaideraf/idzebra:26.04 zebraidx -V`
+- `docker run --rm jaideraf/idzebra:alpine zebraidx -V`
 
-- `docker run --rm jaideraf/idzebra:26.04 yaz-client -V`
+- `docker run --rm jaideraf/idzebra:alpine yaz-client -V`
