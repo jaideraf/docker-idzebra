@@ -14,7 +14,7 @@ docker build -t "jaideraf/idzebra:alpine" -f "Dockerfile_Alpine" .
 or
 
 ```shell
-docker build -t "jaideraf/idzebra:26.04" -f "Dockerfile_Alpine" .
+docker build -t "jaideraf/idzebra:26.04" -f "Dockerfile_Ubuntu_26.04" .
 ```
 
 Push to Docker Hub with:
