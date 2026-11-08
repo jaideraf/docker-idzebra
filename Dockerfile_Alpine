@@ -5,8 +5,8 @@
 # Alpine we build YAZ and IDZebra from source in a builder stage and copy
 # only the installed files (via DESTDIR) into a slim runtime image.
 
-ARG ALPINE_VERSION=3.20
-ARG YAZ_VERSION=5.37.3
+ARG ALPINE_VERSION=3.24
+ARG YAZ_VERSION=5.38.1
 ARG IDZEBRA_VERSION=2.2.11
 
 FROM alpine:${ALPINE_VERSION} AS builder
